@@ -1,4 +1,6 @@
-![GitHub Release](https://img.shields.io/github/v/release/slxca/dto4j?display_name=tag&style=for-the-badge&label=Latest%20Version)
+![GitHub Release](https://img.shields.io/github/v/release/slxca/dto4j?display_name=tag&style=for-the-badge&label=Latest%20Version) 
+![GitHub Repo stars](https://img.shields.io/github/stars/slxca/dto4j?style=for-the-badge&label=Stars)
+![GitHub License](https://img.shields.io/github/license/slxca/dto4j?style=for-the-badge&label=License)
 
 
 # dto4j
