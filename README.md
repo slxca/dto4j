@@ -1,3 +1,6 @@
+![GitHub Release](https://img.shields.io/github/v/release/slxca/dto4j?display_name=tag&style=for-the-badge&label=Latest%20Version)
+
+
 # dto4j
 
 **dto4j** is a lightweight Java library for flexible serialization of DTO (Data Transfer Object) classes. Using annotations and configurable profiles, you can selectively convert complex objects into Maps or JSON strings—ideal for APIs, logging, or configuration purposes.
