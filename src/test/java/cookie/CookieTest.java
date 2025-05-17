@@ -1,8 +1,6 @@
 package cookie;
 
 import com.slxca.Dto4j;
-import donut.DonutEnum;
-import donut.DonutObject;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;

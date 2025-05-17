@@ -2,9 +2,7 @@ package shop;
 
 import com.slxca.Dto4j;
 import cookie.CookieEnum;
-import cookie.CookieObject;
 import donut.DonutEnum;
-import donut.DonutObject;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;

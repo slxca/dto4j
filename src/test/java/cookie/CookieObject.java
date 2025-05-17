@@ -2,7 +2,6 @@ package cookie;
 
 import com.slxca.dto.Dto;
 import com.slxca.dto.DtoProperty;
-import donut.DonutEnum;
 
 @Dto
 public class CookieObject {
