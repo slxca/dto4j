@@ -1,4 +1,4 @@
-name: Java CI with Gradle
+name: Junit Tests
 
 on:
   push:
@@ -8,7 +8,6 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
     permissions:
       contents: read
