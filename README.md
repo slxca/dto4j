@@ -37,7 +37,21 @@
 
 ## Installation
 
-dto4j is a standalone package. Simply include the source files in your project or provide it as a Maven/Gradle dependency once published.
+### Maven
+
+```xml
+<dependency>
+  <groupId>com.slxca</groupId>
+  <artifactId>dto4j</artifactId>
+  <version>1.0.0</version>
+</dependency>
+```
+
+### Gradle
+
+```groovy
+implementation 'com.slxca:dto4j:1.0.0'
+```
 
 ---
 
