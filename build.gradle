@@ -36,7 +36,7 @@ publishing {
             url = uri("https://maven.pkg.github.com/slxca/dto4j")
             credentials {
                 username = project.findProperty("gpr.user") ?: System.getenv("USERNAME")
-                password = project.findProperty("gpr.password") ?: System.getenv("PASSWORD")
+                password = project.findProperty("gpr.token") ?: System.getenv("TOKEN")
             }
         }
     }
