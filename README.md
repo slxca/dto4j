@@ -44,6 +44,13 @@
 ### Maven
 
 ```xml
+<repositories>
+  <repository>
+    <id>github</id>
+    <url>https://maven.pkg.github.com/slxca/dto4j</url>
+  </repository>
+</repositories>
+
 <dependency>
   <groupId>com.slxca</groupId>
   <artifactId>dto4j</artifactId>
@@ -54,6 +61,12 @@
 ### Gradle
 
 ```groovy
+repositories {
+    maven {
+        url = uri("https://maven.pkg.github.com/slxca/dto4j")
+    }
+}
+
 implementation 'com.slxca:dto4j:1.0.0'
 ```
 
