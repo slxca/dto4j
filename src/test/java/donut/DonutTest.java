@@ -11,7 +11,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class DonutTest {
 
     Dto4j dto = Dto4j.builder()
-            .profile("GET_DONUT")
             .object(new DonutObject());
 
     @Test
