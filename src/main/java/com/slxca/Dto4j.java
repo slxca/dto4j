@@ -11,9 +11,7 @@ import java.lang.reflect.Field;
 import java.util.*;
 
 public class Dto4j {
-
-    private static final String DEFAULT_PROFILE = "_default";
-    private String profile = DEFAULT_PROFILE;
+    private String profile;
 
     private static final Map<Class<?>, DtoConverter<?, ?>> CONVERTER_CACHE = new HashMap<>();
 
@@ -22,17 +20,8 @@ public class Dto4j {
             .registerModule(new JavaTimeModule())
             .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 
-
-    Dto4j(String profile) {
-        this.profile = Objects.requireNonNullElse(profile, DEFAULT_PROFILE);
-    }
-
-    public static Dto4j builder(String profile) {
-        return new Dto4j(profile);
-    }
-
     public static Dto4j builder() {
-        return new Dto4j(null);
+        return new Dto4j();
     }
 
     public Dto4j profile(String profile) {
@@ -105,7 +94,11 @@ public class Dto4j {
             if(annotation == null) continue;
             if(annotation.ignore()) continue;
 
-            if(!Arrays.asList(annotation.value()).contains(profile) && !Arrays.asList(annotation.profile()).contains(profile)) continue;
+            if(profile == null) {
+                if(!Arrays.asList(annotation.profile()).isEmpty() || !Arrays.asList(annotation.value()).isEmpty()) continue;
+            } else {
+                if(!Arrays.asList(annotation.profile()).contains(profile) && !Arrays.asList(annotation.value()).contains(profile)) continue;
+            }
 
             field.setAccessible(true);
 
@@ -118,15 +111,16 @@ public class Dto4j {
                 }
 
                 else if (isDtoObject(value)) {
-                    if (annotation.profile() == null || annotation.profile().length == 0) value = Dto4j.builder().object(value).toMap();
-                    else value = Dto4j.builder().profile(profile).object(value).toMap();
+                    value = Dto4j.builder().profile(profile).object(value).toMap();
                 }
 
                 else if (value instanceof Iterable<?>) {
                     List<Object> serializedList = new ArrayList<>();
                     for (Object element : (Iterable<?>) value) {
                         if (isDtoObject(element)) {
-                            serializedList.add(Dto4j.builder().profile(profile).object(element).toMap());
+                            Map<?, ?> profileMap = Dto4j.builder().profile(profile).object(element).toMap();
+                            if(profileMap.isEmpty()) continue;
+                            serializedList.add(profileMap);
                         } else {
                             serializedList.add(element);
                         }

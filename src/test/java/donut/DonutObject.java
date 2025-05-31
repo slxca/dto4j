@@ -6,10 +6,10 @@ import com.slxca.dto.DtoProperty;
 @Dto
 public class DonutObject {
 
-    @DtoProperty(profile = "GET_DONUT")
+    @DtoProperty("GET_DONUT")
     public String name = "Glazed";
 
-    @DtoProperty(value = "GET_DONUT", name = "donutType")
+    @DtoProperty(profile = "GET_DONUT", name = "donutType")
     public DonutEnum type = DonutEnum.CHOCOLATE;
 
 }

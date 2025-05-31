@@ -20,16 +20,9 @@ public class ShopTest {
     void addition() {
         Map<String, Object> shop = dto.toMap();
 
-        System.out.println(shop);
-
         Map<String, Object> expected = new HashMap<>();
         expected.put("name", "Bakery Shop");
-        expected.put("donuts", List.of(
-                Map.of(
-                        "name", "Glazed",
-                        "donutType", DonutEnum.CHOCOLATE
-                )
-        ));
+        expected.put("donuts", List.of());
         expected.put("donutTypes", List.of(
                 DonutEnum.CHOCOLATE,
                 DonutEnum.VANILLA
