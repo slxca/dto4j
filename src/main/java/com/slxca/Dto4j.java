@@ -22,8 +22,17 @@ public class Dto4j {
             .registerModule(new JavaTimeModule())
             .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 
+
+    Dto4j(String profile) {
+        this.profile = Objects.requireNonNullElse(profile, DEFAULT_PROFILE);
+    }
+
+    public static Dto4j builder(String profile) {
+        return new Dto4j(profile);
+    }
+
     public static Dto4j builder() {
-        return new Dto4j();
+        return new Dto4j(null);
     }
 
     public Dto4j profile(String profile) {
@@ -95,7 +104,8 @@ public class Dto4j {
 
             if(annotation == null) continue;
             if(annotation.ignore()) continue;
-            if(!Arrays.asList(annotation.profile()).contains(profile)) continue;
+
+            if(!Arrays.asList(annotation.value()).contains(profile) && !Arrays.asList(annotation.profile()).contains(profile)) continue;
 
             field.setAccessible(true);
 
@@ -108,7 +118,8 @@ public class Dto4j {
                 }
 
                 else if (isDtoObject(value)) {
-                    value = Dto4j.builder().profile(profile).object(value).toMap();
+                    if (annotation.profile() == null || annotation.profile().length == 0) value = Dto4j.builder().object(value).toMap();
+                    else value = Dto4j.builder().profile(profile).object(value).toMap();
                 }
 
                 else if (value instanceof Iterable<?>) {

@@ -12,7 +12,8 @@ import java.lang.annotation.Target;
 public @interface DtoProperty {
     String name() default "";
     boolean ignore() default false;
-    String[] profile() default {"_default"};
+    String[] value() default {"_default"};
+    String[] profile() default {};
     Class<? extends DtoConverter<?, ?>> converter() default NoConverter.class;
 }
 
