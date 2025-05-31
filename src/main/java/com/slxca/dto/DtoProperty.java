@@ -13,7 +13,7 @@ public @interface DtoProperty {
     String name() default "";
     boolean ignore() default false;
     String[] value() default {"_default"};
-    String[] profile() default {"_default"};
+    String[] profile() default {};
     Class<? extends DtoConverter<?, ?>> converter() default NoConverter.class;
 }
 
