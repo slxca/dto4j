@@ -3,19 +3,24 @@ package com.slxca;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.slxca.dto.Dto;
-import com.slxca.dto.DtoConverter;
-import com.slxca.dto.DtoProperty;
+import com.slxca.annotation.Dto;
+import com.slxca.converter.DtoConverter;
+import com.slxca.annotation.DtoProperty;
+import com.slxca.converter.NoConverter;
 
 import java.lang.reflect.Field;
 import java.util.*;
 
 public class Dto4j {
-    private String profile;
 
+    private String PROFILE = null;
     private static final Map<Class<?>, DtoConverter<?, ?>> CONVERTER_CACHE = new HashMap<>();
 
-    private final Map<String, Object> data = new HashMap<>();
+
+    private final Map<String, Object> mapData = new HashMap<>();
+    private final List<Object> listData = new ArrayList<>();
+
+
     private static final ObjectMapper objectMapper = new ObjectMapper()
             .registerModule(new JavaTimeModule())
             .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
@@ -25,7 +30,7 @@ public class Dto4j {
     }
 
     public Dto4j profile(String profile) {
-        this.profile = profile;
+        this.PROFILE = profile;
         return this;
     }
 
@@ -38,28 +43,32 @@ public class Dto4j {
         return this;
     }
 
+    public Dto4j list(List<?> list) {
+        if (list == null) {
+            return this;
+        }
+
+        serializeList(list);
+        return this;
+    }
+
     public Dto4j add(String key, Object value) {
-        data.put(key, value);
+        mapData.put(key, value);
         return this;
     }
 
     public Dto4j addAll(Map<String, Object> map) {
-        data.putAll(map);
+        mapData.putAll(map);
         return this;
     }
 
     public Dto4j addAll(Dto4j dto) {
-        data.putAll(dto.data);
+        mapData.putAll(dto.mapData);
         return this;
     }
 
     public Dto4j remove(String key) {
-        data.remove(key);
-        return this;
-    }
-
-    public Dto4j clear() {
-        data.clear();
+        mapData.remove(key);
         return this;
     }
 
@@ -67,7 +76,7 @@ public class Dto4j {
         try {
             Map<String, Object> sortedData = new LinkedHashMap<>();
 
-            data.entrySet().stream()
+            mapData.entrySet().stream()
                     .sorted(Comparator.comparingInt(e -> typePriority(e.getValue())))
                     .forEachOrdered(e -> sortedData.put(e.getKey(), e.getValue()));
 
@@ -79,66 +88,110 @@ public class Dto4j {
 
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        for (Map.Entry<String, Object> entry : data.entrySet()) {
+        for (Map.Entry<String, Object> entry : mapData.entrySet()) {
             sb.append(entry.getKey()).append("=").append(entry.getValue()).append(";");
         }
         return sb.toString();
     }
 
     public Map<String, Object> toMap() {
-        return new HashMap<>(data);
+        return new HashMap<>(mapData);
     }
 
-    public void serializeObject(Object object) {
+    public List<Object> toList() {
+        return new ArrayList<>(listData);
+    }
+
+    private void serializeList(Iterable<?> iterable) {
+        if(iterable == null) return;
+
+        for (Object element : iterable) {
+            Class<?> clazz = element.getClass();
+
+            if (!clazz.isAnnotationPresent(Dto.class)) return;
+
+            Map<String, Object> map = new HashMap<>();
+
+            for (Field field : clazz.getDeclaredFields()) {
+                Map<String, Object> fieldMap = serializeField(field, element);
+                if (fieldMap == null) continue;
+                map.putAll(fieldMap);
+            }
+
+            listData.add(map);
+        }
+    }
+
+    private void serializeObject(Object object) {
+        if (object == null) return;
+
         Class<?> clazz = object.getClass();
 
         if (!clazz.isAnnotationPresent(Dto.class)) return;
 
+        Map<String, Object> map = new HashMap<>();
+
         for (Field field : clazz.getDeclaredFields()) {
+            Map<String, Object> fieldMap = serializeField(field, object);
+            if (fieldMap == null) continue;
+            map.putAll(fieldMap);
+        }
+
+        mapData.putAll(map);
+    }
+
+    private Map<String, Object> serializeField(Field field, Object object) {
+        try {
             DtoProperty annotation = field.getAnnotation(DtoProperty.class);
 
-            if(annotation == null) continue;
-            if(annotation.ignore()) continue;
-
-            if(profile == null) {
-                if(!Arrays.asList(annotation.profile()).isEmpty() || !Arrays.asList(annotation.value()).isEmpty()) continue;
-            } else {
-                if(!Arrays.asList(annotation.profile()).contains(profile) && !Arrays.asList(annotation.value()).contains(profile)) continue;
-            }
+            if(annotation == null) return null;
+            if(annotation.ignore()) return null;
 
             field.setAccessible(true);
 
-            try {
-                Object value = field.get(object);
-                String name = annotation.name().isEmpty() ? field.getName() : annotation.name();
+            String name = annotation.name().isEmpty() ? field.getName() : annotation.name();
+            Object value = serializeValue(field.get(object), annotation);
 
-                if (annotation.converter() != NoConverter.class) {
-                    value = applyConverter(annotation.converter(), value);
-                }
-
-                else if (isDtoObject(value)) {
-                    value = Dto4j.builder().profile(profile).object(value).toMap();
-                }
-
-                else if (value instanceof Iterable<?>) {
-                    List<Object> serializedList = new ArrayList<>();
-                    for (Object element : (Iterable<?>) value) {
-                        if (isDtoObject(element)) {
-                            Map<?, ?> profileMap = Dto4j.builder().profile(profile).object(element).toMap();
-                            if(profileMap.isEmpty()) continue;
-                            serializedList.add(profileMap);
-                        } else {
-                            serializedList.add(element);
-                        }
-                    }
-                    value = serializedList;
-                }
-
-                data.put(name, value);
-            } catch (IllegalAccessException e) {
-                throw new RuntimeException(e);
-            }
+            return Collections.singletonMap(name, value);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
         }
+    }
+
+    private Object serializeValue(Object value, DtoProperty dtoProperty) {
+        List<String> profiles = new ArrayList<>();
+        Collections.addAll(profiles, dtoProperty.profile());
+        Collections.addAll(profiles, dtoProperty.value());
+
+        if(PROFILE == null) {
+            if(!profiles.isEmpty()) return null;
+        } else {
+            if(!profiles.contains(PROFILE)) return null;
+        }
+
+        if (dtoProperty.converter() != NoConverter.class) {
+            value = applyConverter(dtoProperty.converter(), value);
+        }
+
+        if (isDtoObject(value)) {
+            value = Dto4j.builder().profile(PROFILE).object(value).toMap();
+        }
+
+        if (value instanceof Iterable<?>) {
+            List<Object> serializedList = new ArrayList<>();
+            for (Object element : (Iterable<?>) value) {
+                if (isDtoObject(element)) {
+                    Map<?, ?> profileMap = Dto4j.builder().profile(PROFILE).object(element).toMap();
+                    if(profileMap.isEmpty()) continue;
+                    serializedList.add(profileMap);
+                } else {
+                    serializedList.add(element);
+                }
+            }
+            value = serializedList;
+        }
+
+        return value;
     }
 
     @SuppressWarnings("unchecked")

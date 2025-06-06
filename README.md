@@ -54,7 +54,7 @@
 <dependency>
   <groupId>com.slxca</groupId>
   <artifactId>dto4j</artifactId>
-  <version>1.0.0</version>
+  <version>1.1.0</version>
 </dependency>
 ```
 
@@ -67,7 +67,7 @@ repositories {
     }
 }
 
-implementation 'com.slxca:dto4j:1.0.0'
+implementation 'com.slxca:dto4j:1.1.0'
 ```
 
 ---
@@ -77,8 +77,8 @@ implementation 'com.slxca:dto4j:1.0.0'
 ### Defining DTO Classes
 
 ```java
-import com.slxca.dto.Dto;
-import com.slxca.dto.DtoProperty;
+import com.slxca.annotation.Dto;
+import com.slxca.annotation.DtoProperty;
 
 @Dto
 public class Person {

@@ -1,6 +1,7 @@
-package com.slxca.dto;
+package com.slxca.annotation;
 
-import com.slxca.NoConverter;
+import com.slxca.converter.NoConverter;
+import com.slxca.converter.DtoConverter;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -10,10 +11,10 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface DtoProperty {
-    String name() default "";
-    boolean ignore() default false;
     String[] value() default {};
     String[] profile() default {};
+    String name() default "";
+    boolean ignore() default false;
     Class<? extends DtoConverter<?, ?>> converter() default NoConverter.class;
 }
 

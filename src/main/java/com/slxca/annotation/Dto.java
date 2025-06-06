@@ -1,4 +1,4 @@
-package com.slxca.dto;
+package com.slxca.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

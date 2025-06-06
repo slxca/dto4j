@@ -1,6 +1,4 @@
-package com.slxca;
-
-import com.slxca.dto.DtoConverter;
+package com.slxca.converter;
 
 public class NoConverter implements DtoConverter<Object, Object> {
     @Override

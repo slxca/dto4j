@@ -2,9 +2,11 @@ package shop;
 
 import com.slxca.Dto4j;
 import cookie.CookieEnum;
+import cookie.CookieObject;
 import donut.DonutEnum;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,26 +20,26 @@ public class ShopTest {
 
     @Test
     void addition() {
-        Map<String, Object> shop = dto.toMap();
 
+        Map<String, Object> result = dto.toMap();
         Map<String, Object> expected = new HashMap<>();
-        expected.put("name", "Bakery Shop");
-        expected.put("donuts", List.of());
-        expected.put("donutTypes", List.of(
-                DonutEnum.CHOCOLATE,
-                DonutEnum.VANILLA
-        ));
-        expected.put("cookies", List.of(
-                Map.of(
-                        "name", "PLAIN COOKIE"
-                )
-        ));
-        expected.put("cookieTypes", List.of(
-                CookieEnum.CHOCOLATE,
-                CookieEnum.PEANUT_BUTTER
-        ));
 
-        assertEquals(expected, shop);
+        expected.put("name", "Bakery Shop");
+
+        List<Map<?,?>> cookies = new ArrayList<>();
+
+        Map<String, Object> cookie1 = new HashMap<>();
+        cookie1.put("name", "CHOCOLATE");
+
+        Map<String, Object> cookie2 = new HashMap<>();
+        cookie2.put("name", "PEANUT BUTTER");
+
+        cookies.add(cookie1);
+        cookies.add(cookie2);
+
+        expected.put("cookies", cookies);
+
+        assertEquals(expected, result);
     }
 
 }
