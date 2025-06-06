@@ -65,7 +65,13 @@ public class Dto4j {
 
     public String toJson() {
         try {
-            return objectMapper.writeValueAsString(data);
+            Map<String, Object> sortedData = new LinkedHashMap<>();
+
+            data.entrySet().stream()
+                    .sorted(Comparator.comparingInt(e -> typePriority(e.getValue())))
+                    .forEachOrdered(e -> sortedData.put(e.getKey(), e.getValue()));
+
+            return objectMapper.writeValueAsString(sortedData);
         } catch (Exception e) {
             throw new RuntimeException("Failed to convert to JSON", e);
         }
@@ -163,5 +169,13 @@ public class Dto4j {
         }
 
         return false;
+    }
+
+
+    private int typePriority(Object value) {
+        if (value instanceof String || value instanceof Boolean || value instanceof Map) return 0;
+        if (value instanceof Number) return 1;
+        if (value instanceof Collection || value instanceof Object[]) return 2;
+        return 3;
     }
 }
