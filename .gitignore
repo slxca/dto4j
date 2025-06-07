@@ -1,4 +1,6 @@
-
+### KEYS ###
+secret.key
+public.key
 
 target/
 !.mvn/wrapper/maven-wrapper.jar

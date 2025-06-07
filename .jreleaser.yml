@@ -37,6 +37,6 @@ deploy:
 
 signing:
   active: ALWAYS
+  mode: FILE
   armored: true
   verify: true
-  mode: FILE
