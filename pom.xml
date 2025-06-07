@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.slxca</groupId>
+    <artifactId>dto4j</artifactId>
+    <version>2.0.0</version>
+
+    <name>dto4j</name>
+    <description>dto4j is a lightweight Java library for easy DTO serialization using annotations and builder pattern, supporting nested objects and custom converters.</description>
+    <url>https://github.com/slxca/dto4j</url>
+    <inceptionYear>2025</inceptionYear>
+
+    <properties>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <licenses>
+        <license>
+            <name>MIT</name>
+            <url>https://spdx.org/licenses/MIT.html</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <id>slxca</id>
+            <name>Luca Sträter</name>
+        </developer>
+    </developers>
+
+    <scm>
+        <connection>scm:git:https://github.com/slxca/dto4j.git</connection>
+        <developerConnection>scm:git:https://github.com/slxca/dto4j.git</developerConnection>
+        <url>https://github.com/slxca/dto4j.git</url>
+        <tag>HEAD</tag>
+    </scm>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.jreleaser</groupId>
+                <artifactId>jreleaser-maven-plugin</artifactId>
+                <version>1.17.0</version>
+            </plugin>
+        </plugins>
+    </build>
+</project>

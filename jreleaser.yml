@@ -1,0 +1,42 @@
+project:
+  name: dto4j
+  description: dto4j is a lightweight Java library for easy DTO serialization using annotations and builder pattern, supporting nested objects and custom converters.
+  links:
+    homepage: https://github.com/slxca/dto4j
+  authors:
+    - Luca Sträter
+  license: MIT
+  inceptionYear: 2025
+  stereotype: CLI
+  languages:
+    java:
+      version: 21
+      groupId: com.slxca
+      artifactId: dto4j
+      mainClass: com.slxca.Dto4j
+
+release:
+  github:
+    overwrite: true
+    changelog:
+      formatted: ALWAYS
+      preset: conventional-commits
+      contributors:
+        format: '- {{contributorName}}{{#contributorUsernameAsLink}} ({{.}}){{/contributorUsernameAsLink}}'
+
+deploy:
+  maven:
+    mavenCentral:
+      app:
+        active: ALWAYS
+        url: https://central.sonatype.com/api/v1/publisher
+        snapshotSupported: true
+        sign: true
+        stagingRepositories:
+          - target/staging-deploy
+
+signing:
+  active: ALWAYS
+  armored: true
+  verify: true
+  mode: FILE
